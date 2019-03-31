@@ -2,6 +2,12 @@
 
 dir=${HOME}/.wwwUpdater
 adresy=(http://www.fizyka.pw.edu.pl/index.php/pl/ http://www.if.pw.edu.pl/~mwas/index.html)
+ping -c 1 www.google.pl >/dev/null
+if [ $? -eq 2 ]
+then
+  echo "Brak połączenia z siecią"
+  adresy=()
+fi
 if [ ! -e ${dir} ]
 then
   mkdir $dir
