@@ -1,0 +1,52 @@
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+
+import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+
+public class Nodes {
+	static int PORT = 9999;
+	static int BUFFER_SIZE = 256;
+	
+	public static void main(String[] args) throws Exception{
+		ArrayList<InetAddress> inetAddress = new ArrayList<InetAddress>();
+		ArrayList<Integer> ports = new ArrayList<Integer>();
+
+        DatagramSocket datagramSocket = new DatagramSocket(PORT);
+
+        byte[] byteResponse;
+
+        while (true){
+
+            DatagramPacket receivedPacket = new DatagramPacket( new byte[BUFFER_SIZE], BUFFER_SIZE);
+
+            datagramSocket.receive(receivedPacket);
+
+            int length = receivedPacket.getLength(); 
+            
+            String messageReceived = new String(receivedPacket.getData(), 0, length, "utf8");
+            JSONParser parser = new JSONParser();
+            Object obj = parser.parse(messageReceived);
+            JSONArray array = (JSONArray)obj; //[boolean true, InetAddress nextAddress, ArrayList<> address, String message]
+            InetAddress nextAddress = (InetAddress) array.get(1);
+            
+
+            inetAddress.add( receivedPacket.getAddress() );
+            ports.add( receivedPacket.getPort() );
+
+            System.out.println(message);
+            Thread.sleep(1000); //To oczekiwanie nie jest potrzebne dla
+            // obsługi gniazda
+
+            //DatagramPacket response= new DatagramPacket(byteResponse, byteResponse.length, address, port);
+
+            //datagramSocket.send(response);
+        }
+    }
+}
+

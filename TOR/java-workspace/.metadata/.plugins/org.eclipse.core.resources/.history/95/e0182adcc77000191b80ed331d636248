@@ -1,0 +1,90 @@
+package jsonTest;
+
+import org.json.simple.JSONObject;
+
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.util.ArrayList;
+
+import org.json.simple.JSONArray;
+import org.json.simple.parser.ParseException;
+import org.json.simple.parser.JSONParser;
+
+class Test {
+
+   public static void main(String[] args) {
+	
+      JSONParser parser = new JSONParser();
+      ArrayList<InetAddress> inetAddress = new ArrayList<InetAddress>();
+	  ArrayList<Integer> ports = new ArrayList<Integer>();
+      //String s = "[0,{\"1\":{\"2\":{\"3\":{\"4\":[5,{\"6\":7}]}}}}]";
+      String s = "[1,{\"port\":9999, \"address\":992, \"addresses\":[993,994,995], \"message\":\"Hello\"}]";
+		
+      try{
+         Object obj = parser.parse(s);
+         /*JSONArray array = (JSONArray)obj;
+         
+         System.out.println("The 2nd element of array");
+         System.out.println(array.get(1));
+         System.out.println();
+         
+         JSONObject obj2 = (JSONObject)array.get(1);
+         System.out.println("Field \"Address\"");
+         System.out.println(obj2.get("address"));
+         
+         ArrayList<Long> addressesList = new ArrayList<Long>();
+         addressesList = (ArrayList<Long>)obj2.get("addresses");
+         System.out.println(addressesList);
+         System.out.println(addressesList.get(0));
+         Long nextAddress = addressesList.remove(0);
+         
+         obj2.put("address", nextAddress);
+         obj2.put("addresses", addressesList);
+         array.set(0, 0);
+         array.set(1, obj2);
+         Object json = (Object)array;
+         
+         System.out.println(json);*/
+    	  
+    	  while (true){ 
+              JSONArray array = (JSONArray)obj;
+              JSONObject obj2 = (JSONObject)array.get(1);
+              
+              if( (Long)array.get(0) == 1 ) {
+  	            ArrayList<InetAddress> addressesList = new ArrayList<InetAddress>();
+  	            addressesList = (ArrayList<InetAddress>)obj2.get("addresses");
+  	            InetAddress address = (InetAddress)obj2.get("address");
+  	            int port = (int)obj2.get("port");
+  	            if(addressesList.size() > 0) {
+  	            	InetAddress nextAddress = addressesList.remove(0);
+  	            	obj2.put("address", nextAddress);
+  	                obj2.put("addresses", addressesList);
+  	                array.set(1, obj2);
+  	                Object json = (Object)array;
+  	                System.out.println(json);
+  	            }else {
+  	            	System.out.print(obj2.get("message"));
+  	            	obj2.put("message", "odebrano");
+  	            	array.set(0, 0);
+  	            	array.set(1, obj2);
+  	            	Object json = (Object)array;
+  	            	address = inetAddress.remove(inetAddress.size()-1);
+  	 	            port = ports.remove(ports.size()-1);
+  	 	            System.out.println(json);
+  	            }
+              }else {
+	              	Object json = (Object)array;
+	              	InetAddress address = inetAddress.remove(inetAddress.size()-1);
+	   	            int port = ports.remove(ports.size()-1);
+	   	            System.out.println(json);
+              }
+    	  }
+         
+         
+      }catch(ParseException pe) {
+		
+         System.out.println("position: " + pe.getPosition());
+         System.out.println(pe);
+      }
+   }
+}
