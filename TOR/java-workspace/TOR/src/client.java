@@ -39,8 +39,15 @@ public class client {
         List<String> next = nodes.remove(0);
 
         JSONObject obj = new JSONObject();
-        obj.put("addresses", nodes);
+        obj.put("address", "");
         obj.put("message", message);
+        for(int i=nodes.size()-1;i>=0;i--)
+        {
+            JSONObject obj2 = new JSONObject();
+            obj2.put("address",nodes.get(i));
+            obj2.put("message",obj);
+            obj = obj2;
+        }
         byte[] send_data = obj.toString().getBytes();
 
         DatagramSocket socket = new DatagramSocket();
