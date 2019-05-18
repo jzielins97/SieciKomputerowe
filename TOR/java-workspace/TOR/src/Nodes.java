@@ -1,8 +1,11 @@
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.json.simple.JSONArray;
@@ -16,6 +19,15 @@ public class Nodes {
 		JSONParser parser = new JSONParser();
 		ArrayList<InetAddress> inetAddress = new ArrayList<InetAddress>();
 		ArrayList<Integer> ports = new ArrayList<Integer>();
+
+		List<List<String>> nodes = new ArrayList<>();
+		try (BufferedReader br = new BufferedReader(new FileReader("nodes.csv"))) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				String[] values = line.split(",");
+				nodes.add(Arrays.asList(values));
+			}
+		}
 
         DatagramSocket datagramSocket = new DatagramSocket(PORT);
 
