@@ -12,7 +12,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 
 public class Nodes {
-	static int PORT = 9999;
+//	static int PORT = 9999;
 	static int BUFFER_SIZE = 256;
 	
 	public static void main(String[] args) throws Exception{
@@ -20,6 +20,7 @@ public class Nodes {
 		ArrayList<InetAddress> inetAddress = new ArrayList<InetAddress>();
 		ArrayList<Integer> ports = new ArrayList<Integer>();
 
+//		Żeby numer portu był zgodny z ogólną listą
 		List<List<String>> nodes = new ArrayList<>();
 		try (BufferedReader br = new BufferedReader(new FileReader("nodes.csv"))) {
 			String line;
@@ -28,8 +29,10 @@ public class Nodes {
 				nodes.add(Arrays.asList(values));
 			}
 		}
+		int Port = Integer.parseInt(nodes.get(Integer.parseInt(args[0])).get(1));
 
-        DatagramSocket datagramSocket = new DatagramSocket(PORT);
+//        DatagramSocket datagramSocket = new DatagramSocket(PORT);
+		DatagramSocket datagramSocket = new DatagramSocket(Port);
 
         byte[] byteResponse;
 
@@ -44,17 +47,22 @@ public class Nodes {
             String messageReceived = new String(receivedPacket.getData(), 0, length, "utf8");
             inetAddress.add( receivedPacket.getAddress() );
             ports.add( receivedPacket.getPort() );
-            
+
+
             Object obj = parser.parse(messageReceived);
             JSONArray array = (JSONArray)obj;
             JSONObject obj2 = (JSONObject)array.get(1);
             
             if( (boolean) array.get(0) ) {
-	            ArrayList<InetAddress> addressesList = new ArrayList<InetAddress>();
-	            addressesList = (ArrayList<InetAddress>)obj2.get("addresses");
-	            InetAddress address = (InetAddress)obj2.get("address");
-	            int port = (int)obj2.get("port");
-	            if(addressesList.size() > 0) {
+//	            ArrayList<InetAddress> addressesList;
+//	            addressesList = (ArrayList<InetAddress>)obj2.get("addresses");
+//	            InetAddress address = (InetAddress)obj2.get("address");
+//	            int port = (int)obj2.get("port");
+
+	            InetAddress address = (InetAddress) obj2.get("address");
+	            int port = (int) obj2.get("port");
+	            if(address != null) {
+//	            	KONIEC MODYFIKACJI
 	            	InetAddress nextAddress = addressesList.remove(0);
 	            	obj2.put("address", nextAddress);
 	                obj2.put("addresses", addressesList);
